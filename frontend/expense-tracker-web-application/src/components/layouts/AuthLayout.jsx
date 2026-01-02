@@ -1,5 +1,5 @@
 import React from 'react';
-import ARU from "../../assets/images/ARU.jpg";
+import CARD_2 from "../../assets/images/CARD_2.png";
 import {LuTrendingUpDown} from "react-icons/lu";
 
 const AuthLayout = ({children}) => {
@@ -15,7 +15,7 @@ const AuthLayout = ({children}) => {
            
            {/* Decorative elements */}
            <div className='w-48 h-48 rounded-[40px] bg-purple-600 absolute -top-8 -left-8 z-0' />
-           <div className='w-48 h-56 rounded-[40px] border-[20px] border-fuchsia-600 absolute top-[30%] right-10' />
+           <div className='w-48 h-56 rounded-[40px] border-[20px] border-fuchsia-600 absolute top-[30%] right-0 -translate-x-10w-48 h-56 rounded-[40px] border-[20px] border-fuchsia-600 absolute top-[30%] right-[-10%]' />
            <div className='w-48 h-48 rounded-[40px] bg-violet-600 absolute -bottom-[10%] -left-[10%]' />
 
            {/* Stats card */}
@@ -29,7 +29,7 @@ const AuthLayout = ({children}) => {
            </div>
            
            {/* Bottom image */}
-           <img src={ARU}  className='absolute bottom-5 left-5 right-8 z-20 w-auto max-w-[90%] rounded-xl shadow-lg shadow-blue-400/15' />
+           <img src={CARD_2}  className='absolute h-70 bottom-5 left-5 right-8 z-20 w-auto max-w-[90%] rounded-xl shadow-lg shadow-blue-400/15' />
         </div>
       
     </div>
