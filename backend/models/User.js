@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema(
@@ -14,17 +13,19 @@ const UserSchema = new mongoose.Schema(
 
 //Hash password before saving
 UserSchema.pre("save", async function () {
-  // Only hash if the password was modified
   if (!this.isModified("password")) return;
-
-  const saltRounds = 10;
-  this.password = await bcrypt.hash(this.password, saltRounds);
+  this.password = await bcrypt.hash(this.password, 10);
 });
 
-// Compare Passwords
+// Compare Passwords - HANDLES BOTH HASHED AND PLAIN PASSWORDS
 UserSchema.methods.comparePassword = async function (candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
-  
+    // Check if stored password is already hashed (starts with $2b$10$)
+    if (this.password && this.password.startsWith('$2b$10$')) {
+        return await bcrypt.compare(candidatePassword, this.password);
+    } else {
+        // Password is plain text - compare directly
+        return candidatePassword === this.password;
+    }
 };
 
 module.exports = mongoose.model('User', UserSchema);
