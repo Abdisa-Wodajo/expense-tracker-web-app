@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/inputs/input";
 import {validateEmail} from '../../utils/helper';
 import ProfilePhotoSelector from '../../components/inputs/ProfilePhotoSelector';
+import {UserContext} from "../../context/UserContext";
+import axiosInstance from '../../utils/axiosInstance'; 
+import { API_PATHS } from '../../utils/apiPaths'; 
+import  uploadImage  from '../../utils/uploadImage'; 
 
 const SignUp = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -12,10 +16,11 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+const {updateUser} = useContext(UserContext);
   const navigate = useNavigate();
 
   // handle Sign up form submit
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     
     let profileImageUrl = "";
@@ -34,7 +39,36 @@ const SignUp = () => {
     }
     setError("");
 
-    //SignUp API call
+    // SignUp API Call
+
+try {
+  // Upload image if present
+  if(profilePic) {
+    const imgUploadRes = await uploadImage(profilePic);
+    profileImageUrl = imgUploadRes.imageUrl || "";
+  }
+
+    const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        fullName,
+        email,
+        password,
+        profileImageUrl
+    });
+    
+    const { token, user } = response.data;
+
+    if (token) {
+        localStorage.setItem("token", token);
+        updateUser(user);
+        navigate("/dashboard");
+    }
+} catch (error) {  // Add closing brace } before catch
+    if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+    } else {
+        setError("Something went wrong. Please try again.");
+    }
+}
   };
 
   return (
@@ -83,7 +117,7 @@ const SignUp = () => {
                     )}
           
                     <button type='submit' className='btn-primary'>
-                      SIG NUP
+                      SIGN UP
                     </button>
           
                     <p className='text-[13px] text-slate-800 mt-3'>
